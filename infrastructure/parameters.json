@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "projectName": {
+      "value": "odoomta"
+    },
+    "environment": {
+      "value": "prod"
+    },
+    "location": {
+      "value": "eastus"
+    },
+    "vmCount": {
+      "value": 1
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPublicKey": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDo3y4WKM1gfBv6uLsR5JTrXLlWPvBj5eHvlLWyRxoVhCm7B2z3ZG8Q8K6mBvLgC3NzH4j2xG9kQeC5oB5xG7KQR your-public-key@example.com"
+    },
+    "dbPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.KeyVault/vaults/{vaultName}"
+        },
+        "secretName": "odoo-db-password"
+      }
+    },
+    "odooPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.KeyVault/vaults/{vaultName}"
+        },
+        "secretName": "odoo-admin-password"
+      }
+    }
+  }
+}

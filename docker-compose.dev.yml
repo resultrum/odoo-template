@@ -1,0 +1,12 @@
+services:
+  web:
+    volumes:
+      - ./addons/custom:/mnt/extra-addons/custom:rw
+      - ./addons/oca:/mnt/extra-addons/oca:rw
+      - ./addons/oca-addons:/mnt/extra-addons/oca-addons:rw
+      - ./repos.yml:/mnt/repos.yml:ro
+      - ~/.ssh:/root/.ssh:ro  # Monte en root, entrypoint copie vers odoo
+    environment:
+      - ENABLE_GIT_AGGREGATE=false  # DEV: Disable git-aggregate, symlinks from local files
+      # Uncomment below to enable git-aggregate for updating modules
+      # - ENABLE_GIT_AGGREGATE=true
