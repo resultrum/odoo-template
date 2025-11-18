@@ -1,54 +1,28 @@
-# Git-Aggregator Configuration for odoo-mta
+# Git-Aggregator Configuration
 #
-# This file controls how OCA repositories are merged with Metrum customizations.
+# This file controls how OCA repositories are merged with your customizations.
+# It is empty by default. Add OCA repositories as needed for your project.
+#
 # Format:
 #   ./addons/oca/<repo-name>:     # Where to store the merged repo locally
 #     remotes:
 #       oca: <OCA-GITHUB-URL>     # Official OCA repository
-#       resultrum: <FORK-URL>     # Metrum fork for customizations
+#       resultrum: <FORK-URL>     # Your organization fork for customizations
 #     merges:
 #       - oca <branch>            # Base branch from OCA
 #       - resultrum <branch>      # (Optional) Custom branch to merge on top
 #     target: resultrum <branch>  # Where to push merged result
 #
+# Example (uncomment and customize):
 # ============================================================================
-
-# Helpdesk Management Suite
-./addons/oca/helpdesk:
-  remotes:
-    oca: git@github.com:OCA/helpdesk.git
-    resultrum: git@github.com:resultrum/helpdesk.git
-  merges:
-    - oca 18.0                    # Base from OCA's official 18.0 branch
-    # - resultrum feature/custom-fields  # Uncomment to add custom branch
-  target: resultrum master-18.0-mta
-
-# Example: How to add a custom branch to helpdesk
-# ============================================================================
-# 1. Create a branch in resultrum/helpdesk fork:
-#    git checkout -b feature/custom-fields origin/18.0
-#    git push resultrum feature/custom-fields
-#
-# 2. Add to merges below (AFTER the oca branch for proper merge order):
-#    merges:
-#      - oca 18.0
-#      - resultrum feature/custom-fields
-#
-# 3. Enable git-aggregator:
-#    docker-compose.dev.yml: ENABLE_GIT_AGGREGATE=true
-#
-# 4. Restart Docker:
-#    docker-compose down
-#    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-#
-# ============================================================================
-
-# FUTURE: Server Tools (uncomment when ready)
-# ============================================================================
-# ./addons/oca/server-tools:
+# ./addons/oca/account-invoicing:
 #   remotes:
-#     oca: git@github.com:OCA/server-tools.git
-#     resultrum: git@github.com:resultrum/server-tools.git
+#     oca: git@github.com:OCA/account-invoicing.git
+#     resultrum: git@github.com:your-org/account-invoicing.git
 #   merges:
 #     - oca 18.0
-#   target: resultrum master-18.0-mta
+#   target: resultrum master-18.0
+#
+# To populate this file with your repositories, run:
+#   ./scripts/setup-repositories.sh
+#
