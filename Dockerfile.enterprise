@@ -1,36 +1,35 @@
-# Dockerfile for Enterprise Edition Development
-# Base Image: Odoo Enterprise built weekly from resultrum/enterprise
-# This image is automatically built and pushed to GHCR by GitHub Actions
+# Dockerfile for Enterprise Edition
+# Base: Official Odoo image + Enterprise addons from resultrum/enterprise
 #
-# Image tags (all pointing to the same weekly build):
-#   ghcr.io/resultrum/odoo:18.0-enterprise-latest (always the latest weekly build)
-#   ghcr.io/resultrum/odoo:18.0-enterprise-week-47 (specific week)
-#   ghcr.io/resultrum/odoo:18.0-enterprise-2025-W47 (year-week format)
+# This image is built weekly by GitHub Actions and published to:
+#   ghcr.io/resultrum/odoo:18.0-enterprise-latest
+#   ghcr.io/resultrum/odoo:18.0-enterprise-week-47
+#   ghcr.io/resultrum/odoo:18.0-enterprise-2025-W47
 #
 # Workflow: .github/workflows/build-enterprise-image.yml
 #   - Runs: Every Monday at 00:00 UTC
-#   - Source: Clone resultrum/enterprise
-#   - Build: Docker image from source
-#   - Push: To GHCR with multiple tags
+#   - Clones resultrum/enterprise (Enterprise addons)
+#   - Builds image: FROM odoo:18.0 + Enterprise modules
+#   - Pushes to GHCR with multiple tags
 #
-# Local usage:
-#   # First-time setup: authenticate to GHCR
-#   docker login ghcr.io -u <github-username> -p <github-token>
-#
-#   # Run with Enterprise edition
+# Usage:
 #   docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
 
-FROM ghcr.io/resultrum/odoo:18.0-enterprise-latest
+FROM odoo:18.0
 
 USER root
 
-# Install git and git-aggregator
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     && pip3 install --break-system-packages git-aggregator \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
+
+# Copy Enterprise addons (built into image)
+# During GitHub Actions build, resultrum/enterprise is copied to ./enterprise
+COPY enterprise /mnt/extra-addons/enterprise
 
 # Copy custom entrypoint script
 COPY entrypoint.sh /entrypoint-custom.sh

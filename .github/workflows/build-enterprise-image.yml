@@ -63,8 +63,8 @@ jobs:
       - name: Build and push Enterprise image
         uses: docker/build-push-action@v4
         with:
-          context: ./odoo-enterprise
-          file: ./odoo-enterprise/Dockerfile
+          context: .
+          file: ./Dockerfile.enterprise
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-latest
@@ -73,7 +73,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-${{ steps.tags.outputs.date }}
           labels: |
             org.opencontainers.image.title=Odoo Enterprise
-            org.opencontainers.image.description=Odoo 18.0 Enterprise Edition
+            org.opencontainers.image.description=Odoo 18.0 + Enterprise addons
             org.opencontainers.image.source=https://github.com/resultrum/enterprise
             org.opencontainers.image.created=${{ steps.tags.outputs.date }}
           cache-from: type=gha
