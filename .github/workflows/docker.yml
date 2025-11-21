@@ -1,4 +1,10 @@
-name: Docker - Build & Push to GHCR
+name: Docker - Build & Push Community Edition to GHCR
+
+# This workflow builds the COMMUNITY EDITION Docker image
+# - Uses: Dockerfile (FROM odoo:18.0)
+# - Publishes to: ghcr.io/resultrum/odoo-template:*
+#
+# For Enterprise Edition builds, see: .github/workflows/build-enterprise-image.yml
 
 on:
   push:

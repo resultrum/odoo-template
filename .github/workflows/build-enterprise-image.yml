@@ -1,5 +1,12 @@
 name: Build & Push Odoo Enterprise Image to GHCR
 
+# This workflow builds the ENTERPRISE EDITION Docker image
+# - Source: resultrum/enterprise (private repo, requires auth)
+# - Publishes to: ghcr.io/resultrum/odoo:18.0-enterprise-*
+# - Tags: latest, week-XX, YYYY-WXX, YYYY-MM-DD
+#
+# For Community Edition builds, see: .github/workflows/docker.yml
+
 on:
   schedule:
     # Chaque lundi à 00:00 UTC
