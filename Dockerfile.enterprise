@@ -26,9 +26,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create symlinks for all addons in one place
-RUN ln -sf /mnt/extra-addons/enterprise /usr/lib/python3/dist-packages/odoo/addons/enterprise && \
-    ln -sf /mnt/extra-addons/custom /usr/lib/python3/dist-packages/odoo/addons/custom && \
+# Create symlinks for project addons (custom and oca-addons are mounted at runtime)
+# Enterprise addons are already symlinked in the base image
+RUN ln -sf /mnt/extra-addons/custom /usr/lib/python3/dist-packages/odoo/addons/custom && \
     ln -sf /mnt/extra-addons/oca-addons /usr/lib/python3/dist-packages/odoo/addons/oca-addons
 
 # Copy custom entrypoint script

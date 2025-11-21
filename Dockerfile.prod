@@ -49,6 +49,13 @@ COPY ./addons/custom /mnt/extra-addons/custom
 COPY ./addons/oca-addons /mnt/extra-addons/oca-addons
 
 # ============================================================================
+# Create symlinks for addons
+# ============================================================================
+
+RUN ln -sf /mnt/extra-addons/custom /usr/lib/python3/dist-packages/odoo/addons/custom && \
+    ln -sf /mnt/extra-addons/oca-addons /usr/lib/python3/dist-packages/odoo/addons/oca-addons
+
+# ============================================================================
 # Copy Configuration
 # ============================================================================
 

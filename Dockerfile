@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
 
+# Create symlinks for project addons (custom and oca-addons are mounted at runtime)
+RUN ln -sf /mnt/extra-addons/custom /usr/lib/python3/dist-packages/odoo/addons/custom && \
+    ln -sf /mnt/extra-addons/oca-addons /usr/lib/python3/dist-packages/odoo/addons/oca-addons
+
 # Copy custom entrypoint script
 COPY entrypoint.sh /entrypoint-custom.sh
 RUN chmod +x /entrypoint-custom.sh
