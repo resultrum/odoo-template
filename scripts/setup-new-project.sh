@@ -45,7 +45,7 @@ if [[ ! "$MODULE_NAME" =~ ^[a-z0-9_]+$ ]]; then
   exit 1
 fi
 
-if [ ! -f "Dockerfile" ] || [ ! -d "addons/custom/mta_base" ]; then
+if [ ! -f "Dockerfile" ] || [ ! -d "addons/custom" ]; then
   echo -e "${RED}❌ This script must be run from the root of the template repository${NC}"
   exit 1
 fi

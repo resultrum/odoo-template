@@ -46,10 +46,10 @@ cd odoo-<project>
 ./scripts/setup-new-project.sh odoo-<project> <module_name> <organization> [enterprise|community]
 
 # Exemple pour Community:
-./scripts/setup-new-project.sh odoo-pbt pbt_base "Metrum SA" community
+./scripts/setup-new-project.sh odoo-myproject myproject_base myorg community
 
 # Exemple pour Enterprise:
-./scripts/setup-new-project.sh odoo-pbt pbt_base "Metrum SA" enterprise
+./scripts/setup-new-project.sh odoo-myproject myproject_base myorg enterprise
 
 # 3. Committer les changements
 git add .
@@ -80,7 +80,7 @@ docker-compose logs web | grep -i "enterprise\|community"
 **Détails:**
 - Image buildée chaque lundi: `ghcr.io/resultrum/odoo:18.0-enterprise-latest`
 - Tags aussi disponibles: `week-47`, `2025-W47`, `2025-01-15`
-- Pour plus d'infos: voir `docs/ENTERPRISE_SETUP.md`
+- Repository source: `https://github.com/resultrum/enterprise`
 
 ---
 
@@ -90,7 +90,7 @@ docker-compose logs web | grep -i "enterprise\|community"
 .
 ├── addons/
 │   ├── custom/              # Modules custom (renommé durant setup)
-│   │   └── mta_base/        # Sera renommé en <module_name>
+│   │   └── <module_name>/   # Module de base du projet
 │   ├── oca/                 # Dépôts OCA fusionnés (via git-aggregator)
 │   └── oca-addons/          # Symlinks vers modules OCA
 │
