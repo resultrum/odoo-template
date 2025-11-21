@@ -10,16 +10,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
 
-# Create PyCharm helpers directory
-RUN mkdir -p /opt/.pycharm_helpers
-
 # Copy custom entrypoint script
 COPY entrypoint.sh /entrypoint-custom.sh
 RUN chmod +x /entrypoint-custom.sh
-
-# Copy fixed packaging_tool.py for PyCharm compatibility
-COPY packaging_tool.py /opt/.pycharm_helpers/packaging_tool.py
-RUN chmod +x /opt/.pycharm_helpers/packaging_tool.py
 
 ENTRYPOINT ["/entrypoint-custom.sh"]
 CMD ["odoo"]
