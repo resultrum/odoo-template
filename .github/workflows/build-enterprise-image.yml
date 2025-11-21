@@ -39,13 +39,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout Odoo Enterprise source
+      - name: Checkout Odoo Enterprise addons
         uses: actions/checkout@v4
         with:
           repository: resultrum/enterprise
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./odoo-enterprise
-          # Branch: main or master (à adapter selon ton setup)
+          path: ./enterprise
           ref: main
 
       - name: Calculate version tags
