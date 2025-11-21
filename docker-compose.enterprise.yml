@@ -1,14 +1,11 @@
 # Docker Compose Override for Enterprise Edition
 # Usage: docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
 #
-# This file overrides the base docker-compose.yml to use Dockerfile.enterprise
-# which pulls from the weekly-built Enterprise image at GHCR
+# This file overrides the base docker-compose.yml to use the pre-built Enterprise image from GHCR
 
 version: '3.8'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.enterprise
+    image: ghcr.io/resultrum/odoo:18.0-enterprise-latest
     # Rest of the config is inherited from docker-compose.yml
