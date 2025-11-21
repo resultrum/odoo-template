@@ -1,35 +1,31 @@
-# Dockerfile for Enterprise Edition
-# Base: Official Odoo image + Enterprise addons from resultrum/enterprise
+# Dockerfile for Enterprise Edition Development
+# Uses pre-built image from resultrum/enterprise
 #
-# This image is built weekly by GitHub Actions and published to:
+# The Enterprise image is built weekly by:
+#   resultrum/enterprise/.github/workflows/build-image.yml
+#
+# Image published to:
 #   ghcr.io/resultrum/odoo:18.0-enterprise-latest
 #   ghcr.io/resultrum/odoo:18.0-enterprise-week-47
 #   ghcr.io/resultrum/odoo:18.0-enterprise-2025-W47
 #
-# Workflow: .github/workflows/build-enterprise-image.yml
-#   - Runs: Every Monday at 00:00 UTC
-#   - Clones resultrum/enterprise (Enterprise addons)
-#   - Builds image: FROM odoo:18.0 + Enterprise modules
-#   - Pushes to GHCR with multiple tags
+# Contains: Odoo 18.0 + all Enterprise addons
 #
-# Usage:
-#   docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
+# Local usage:
+#   1. docker login ghcr.io -u <username> -p <token>
+#   2. docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
 
-FROM odoo:18.0
+FROM ghcr.io/resultrum/odoo:18.0-enterprise-latest
 
 USER root
 
-# Install dependencies
+# Install development dependencies
 RUN apt-get update && apt-get install -y \
     git \
     && pip3 install --break-system-packages git-aggregator \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
-
-# Copy Enterprise addons (built into image)
-# During GitHub Actions build, resultrum/enterprise is copied to ./enterprise
-COPY enterprise /mnt/extra-addons/enterprise
 
 # Copy custom entrypoint script
 COPY entrypoint.sh /entrypoint-custom.sh
