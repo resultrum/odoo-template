@@ -39,17 +39,17 @@ cd odoo-<project>
 ### Méthode 2: Clone Local + Setup
 ```bash
 # 1. Cloner le template
-git clone https://github.com/<org>/odoo-template.git odoo-<project>
+git clone https://github.com/resultrum/odoo-template.git odoo-<project>
 cd odoo-<project>
 
 # 2. Exécuter le script de setup
 ./scripts/setup-new-project.sh odoo-<project> <module_name> <organization> [enterprise|community]
 
 # Exemple pour Community:
-./scripts/setup-new-project.sh odoo-crm crm_base mycompany community
+./scripts/setup-new-project.sh odoo-pbt pbt_base "Metrum SA" community
 
 # Exemple pour Enterprise:
-./scripts/setup-new-project.sh odoo-pbt pbt_base mycompany enterprise
+./scripts/setup-new-project.sh odoo-pbt pbt_base "Metrum SA" enterprise
 
 # 3. Committer les changements
 git add .
@@ -61,27 +61,26 @@ docker-compose up -d
 ```
 
 ### Après Setup (Enterprise Uniquement)
-Si vous avez choisi **enterprise**:
 
-1. **Mettre à jour le Dockerfile** pour l'image Enterprise:
-   ```bash
-   # Edit Dockerfile and uncomment ONE of these:
+Si vous avez choisi **enterprise**, une image Docker Enterprise est buildée **automatiquement chaque lundi** par GitHub Actions.
 
-   # Option A (Recommended): GitHub Enterprise Image
-   FROM ghcr.io/odoo/odoo:18.0-enterprise
-   # First: docker login ghcr.io -u <username> -p <token>
+**Pour utiliser Enterprise localement:**
 
-   # Option B: Community Edition (dev/test only)
-   FROM odoo:18.0  # ✅ Already configured
+```bash
+# 1. Se connecter à GHCR (une seule fois)
+docker login ghcr.io -u <github-username> -p <github-token>
 
-   # Option C: Build from Odoo Enterprise source
-   ```
+# 2. Lancer avec Enterprise
+docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
 
-2. **Reconstruire l'image Docker:**
-   ```bash
-   docker-compose down
-   docker-compose up -d --build
-   ```
+# 3. Vérifier
+docker-compose logs web | grep -i "enterprise\|community"
+```
+
+**Détails:**
+- Image buildée chaque lundi: `ghcr.io/resultrum/odoo:18.0-enterprise-latest`
+- Tags aussi disponibles: `week-47`, `2025-W47`, `2025-01-15`
+- Pour plus d'infos: voir `docs/ENTERPRISE_SETUP.md`
 
 ---
 

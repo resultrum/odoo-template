@@ -1,0 +1,14 @@
+# Docker Compose Override for Enterprise Edition
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
+#
+# This file overrides the base docker-compose.yml to use Dockerfile.enterprise
+# which pulls from the weekly-built Enterprise image at GHCR
+
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.enterprise
+    # Rest of the config is inherited from docker-compose.yml

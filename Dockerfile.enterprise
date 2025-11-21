@@ -1,20 +1,26 @@
 # Dockerfile for Enterprise Edition Development
-# Base Image: Odoo Enterprise from GHCR or custom build
-# For production builds, use Dockerfile.prod
-
-# TODO: Choose ONE of the following base images:
-# Option 1: GitHub Enterprise Nightly (requires authentication)
-#   FROM ghcr.io/odoo/odoo:18.0-enterprise
-#   Before building, run: docker login ghcr.io -u <username> -p <github-token>
+# Base Image: Odoo Enterprise built weekly from resultrum/enterprise
+# This image is automatically built and pushed to GHCR by GitHub Actions
 #
-# Option 2: Community Edition as fallback (for development only)
-#   FROM odoo:18.0
+# Image tags (all pointing to the same weekly build):
+#   ghcr.io/resultrum/odoo:18.0-enterprise-latest (always the latest weekly build)
+#   ghcr.io/resultrum/odoo:18.0-enterprise-week-47 (specific week)
+#   ghcr.io/resultrum/odoo:18.0-enterprise-2025-W47 (year-week format)
 #
-# Option 3: Build from Odoo Enterprise source
-#   Clone Odoo repository and build from their Dockerfile
+# Workflow: .github/workflows/build-enterprise-image.yml
+#   - Runs: Every Monday at 00:00 UTC
+#   - Source: Clone resultrum/enterprise
+#   - Build: Docker image from source
+#   - Push: To GHCR with multiple tags
+#
+# Local usage:
+#   # First-time setup: authenticate to GHCR
+#   docker login ghcr.io -u <github-username> -p <github-token>
+#
+#   # Run with Enterprise edition
+#   docker-compose -f docker-compose.yml -f docker-compose.enterprise.yml up -d
 
-# CURRENT: Using Community as fallback - CHANGE THIS for Production
-FROM odoo:18.0
+FROM ghcr.io/resultrum/odoo:18.0-enterprise-latest
 
 USER root
 

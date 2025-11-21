@@ -1,0 +1,95 @@
+name: Build & Push Odoo Enterprise Image to GHCR
+
+on:
+  schedule:
+    # Chaque lundi à 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    # Permet de lancer manuellement depuis GitHub
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: resultrum/odoo
+
+jobs:
+  build-enterprise:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout odoo-template (for Dockerfile)
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Container Registry (GHCR)
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Odoo Enterprise source
+        uses: actions/checkout@v4
+        with:
+          repository: resultrum/enterprise
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./odoo-enterprise
+          # Branch: main or master (à adapter selon ton setup)
+          ref: main
+
+      - name: Calculate version tags
+        id: tags
+        run: |
+          WEEK=$(date +%V)
+          YEAR=$(date +%Y)
+          DATE=$(date +%Y-%m-%d)
+
+          echo "week=${WEEK}" >> $GITHUB_OUTPUT
+          echo "year=${YEAR}" >> $GITHUB_OUTPUT
+          echo "date=${DATE}" >> $GITHUB_OUTPUT
+          echo "version_week=${YEAR}-W${WEEK}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Enterprise image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./odoo-enterprise
+          file: ./odoo-enterprise/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-week-${{ steps.tags.outputs.week }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-${{ steps.tags.outputs.version_week }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-${{ steps.tags.outputs.date }}
+          labels: |
+            org.opencontainers.image.title=Odoo Enterprise
+            org.opencontainers.image.description=Odoo 18.0 Enterprise Edition
+            org.opencontainers.image.source=https://github.com/resultrum/enterprise
+            org.opencontainers.image.created=${{ steps.tags.outputs.date }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-latest
+          format: 'sarif'
+          output: 'trivy-enterprise-results.sarif'
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-enterprise-results.sarif'
+
+      - name: Notify Slack (optionnel)
+        if: success()
+        run: |
+          echo "✅ Odoo Enterprise image built and pushed successfully"
+          echo "   Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:18.0-enterprise-week-${{ steps.tags.outputs.week }}"
+          echo "   Tags: latest, week-${{ steps.tags.outputs.week }}, ${{ steps.tags.outputs.version_week }}, ${{ steps.tags.outputs.date }}"
